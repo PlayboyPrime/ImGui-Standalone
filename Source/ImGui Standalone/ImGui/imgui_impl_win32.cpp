@@ -881,10 +881,9 @@ static void ImGui_ImplWin32_CreateWindow(ImGuiViewport* viewport)
     // Create window
     RECT rect = { (LONG)viewport->Pos.x, (LONG)viewport->Pos.y, (LONG)(viewport->Pos.x + viewport->Size.x), (LONG)(viewport->Pos.y + viewport->Size.y) };
     ::AdjustWindowRectEx(&rect, vd->DwStyle, FALSE, vd->DwExStyle);
-    vd->Hwnd = ::CreateWindowEx(
-        vd->DwExStyle, _T("ImGui Platform"), _T("Untitled"), vd->DwStyle,   // Style, class name, window name
-        rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,    // Window area
-        parent_window, NULL, ::GetModuleHandle(NULL), NULL);                    // Parent window, Menu, Instance, Param
+    vd->Hwnd = CreateWindowEx(vd->DwExStyle | WS_EX_LAYERED | WS_EX_NOACTIVATE, _T("ImGui Platform"), _T("Untitled"), vd->DwStyle | WS_POPUP, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, parent_window, nullptr, ::GetModuleHandle(nullptr), nullptr);
+    SetLayeredWindowAttributes(vd->Hwnd, RGB(0, 0, 0), 0, ULW_COLORKEY);
+
     vd->HwndOwned = true;
     viewport->PlatformRequestResize = false;
     viewport->PlatformHandle = viewport->PlatformHandleRaw = vd->Hwnd;
